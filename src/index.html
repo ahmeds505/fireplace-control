@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <title>Home</title>
+</head>
+<body>
+
+    <div class="container">
+        <div class="vrijednosti">
+            <h2>Status grijanja:</h2>
+            <h1 class="vrijednost" id="ukljuceno"></h1>
+            <h2>Temperatura:</h2>
+            <h1 class="vrijednost" id="temp"></h1>
+            <h2>Vlažnost zraka:</h2>
+            <h1 class="vrijednost" id="vlaznost"></h1>
+        </div>
+        <div class="dugmad">
+            <button id="btnUkljuci" >Uključi</button>
+            <button id="btnIskljuci" >Isključi</button>
+            <button id="btnDiodaOn" >Ukljuci diodu</button>
+            <button id="btnDiodaOff" >Iskljuci diodu</button>
+
+        </div>
+    </div>
+    
+    <script type="module" >
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js';
+        import { getDatabase, ref, set, onValue, get, child} from 'https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js';
+        
+        const app = initializeApp({
+            apiKey: "AIzaSyDP5lsHbXDEgQC-FRwkwSYCzC9k_AuFVhA",
+            authDomain: "fireplace-control.firebaseapp.com",
+            databaseURL: "https://fireplace-control-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "fireplace-control",
+            storageBucket: "fireplace-control.appspot.com",
+            messagingSenderId: "938655209488",
+            appId: "1:938655209488:web:f080147c77bde3fd039295"
+        });
+        const db = getDatabase();
+
+        var ukljuceno = document.getElementById('ukljuceno');
+        var temp = document.getElementById('temp');
+        var vlaznost = document.getElementById('vlaznost');
+
+        var ukljucenoRef = ref(db, 'Upravljanje/Ukljuceno')
+        var tempRef = ref(db, 'Mjerenje/TemperaturaZraka');
+        var vlaznostRef = ref(db, 'Mjerenje/VlaznostZraka');
+
+        onValue(ukljucenoRef, (snapshot) => {
+            const data = snapshot.val();
+            if(data == true)
+            {
+                ukljuceno.innerHTML = "UKLJUČENO";
+                ukljuceno.style.color = "blue";
+            }
+            else
+            {
+                ukljuceno.innerHTML = "ISKLJUČENO";
+                ukljuceno.style.color = "red";
+
+            }
+        })
+
+        onValue(tempRef, (snapshot)=>{
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                temp.innerHTML = data + " °C";
+                if(data > 25)
+                {
+                    temp.style.color = "red";
+                }
+                else if(data > 20)
+                {
+                    temp.style.color = "green";
+                }
+                else
+                {
+                    temp.style.color = "blue";
+                }
+            } 
+            else 
+            {
+                console.log("Nema dostupnih podataka!");
+            }
+        });
+
+        onValue(vlaznostRef, (snapshot)=>{
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                vlaznost.innerHTML = data + " %";
+                if(data > 60)
+                {
+                    vlaznost.style.color = "red";
+                }
+                else if(data > 30)
+                {
+                    vlaznost.style.color = "green";
+                }
+                else
+                {
+                    vlaznost.style.color = "blue";
+                }
+            } 
+            else
+            {
+                console.log("Nema dostupnih podataka!");
+            }
+        });
+
+        var btnUkljuci = document.getElementById('btnUkljuci');
+        btnUkljuci.addEventListener('click', Ukljuci);
+
+        var btnIskljuci = document.getElementById('btnIskljuci');
+        btnIskljuci.addEventListener('click', Iskljuci);
+
+        function Ukljuci() 
+        {
+            set(ref(db, 'Upravljanje'), {
+                Ukljuceno : true
+            });
+            
+        }
+
+        function Iskljuci()
+        {
+            set(ref(db, 'Upravljanje'), {
+                Ukljuceno : false
+            });
+        }
+
+        var btnDiodaOn = document.getElementById('btnDiodaOn');
+        btnDiodaOn.addEventListener('click', DiodaOn);
+
+        var btnDiodaOff = document.getElementById('btnDiodaOff');
+        btnDiodaOff.addEventListener('click', DiodaOff);
+
+        function DiodaOn(){
+            set(ref(db, 'Dioda'), {
+                Ukljucena : true
+            });
+        }
+
+        function DiodaOff(){
+            set(ref(db, 'Dioda'), {
+                Ukljucena : false
+            });
+        }
+    </script>
+
+</body>
+</html>
