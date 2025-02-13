@@ -28,8 +28,8 @@
 DHT_Unified dht(DHTPIN, DHTTYPE); 
 
 /* 1. Define the WiFi credentials */
-#define WIFI_SSID "Sedic_Home"
-#define WIFI_PASSWORD "1999s2003"
+#define WIFI_SSID "YourWiFi"
+#define WIFI_PASSWORD "YourPassword"
 
 // For the following credentials, see examples/Authentications/SignInAsUser/EmailPassword/EmailPassword.ino
 
@@ -40,8 +40,8 @@ DHT_Unified dht(DHTPIN, DHTTYPE);
 #define DATABASE_URL "fireplace-control-default-rtdb.europe-west1.firebasedatabase.app" //<databaseName>.firebaseio.com or <databaseName>.<region>.firebasedatabase.app
 
 /* 4. Define the user Email and password that alreadey registerd or added in your project */
-#define USER_EMAIL "elninoever0@gmail.com"
-#define USER_PASSWORD "fernandotorres"
+#define USER_EMAIL "YourEmail"
+#define USER_PASSWORD "YourPassword"
 
 #define LED D0            // Led in NodeMCU at pin GPIO16 (D0).
 // Define Firebase Data object
